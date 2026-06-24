@@ -15,3 +15,8 @@ class PersonSerializer(serializers.Serializer):
         instance.city = validate_date.get("city", instance.city)
         instance.save()
         return instance
+    
+class PersonModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Person
+        fields = ['name', 'city', 'age']
