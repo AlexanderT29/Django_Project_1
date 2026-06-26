@@ -13,7 +13,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 
 @api_view(['GET','PUT','PATCH'])
 def singleobj(request, id):
@@ -52,35 +53,11 @@ def multipleobj(request):
         serializer = PersonModelSerializer(data, many=True)
         return Response(serializer.data)
     
-class multipleObjAPIView(CreateModelMixin, ListModelMixin, GenericAPIView):
+class multipleObjAPIView(ListCreateAPIView):
     queryset = Person.objects.all()
     serializer_class = PersonModelSerializer
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request):
-        return self.create(request)
     
-class singleObjAPIView(GenericAPIView):
-
-    def get(self, request, id):
-        data = get_object_or_404(Person, id=id)
-        serializer = PersonModelSerializer(data)
-        return Response(serializer.data)
-
-    def put(self,request, id):
-        data = get_object_or_404(Person, id=id)
-        parsed_data = request.data
-        serializer = PersonModelSerializer(data, data=parsed_data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({'update':'success'})
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def patch(self, request, id):
-        data = get_object_or_404(Person, id=id)
-        parsed_data = request.data
-        serializer = PersonModelSerializer(data, data=parsed_data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response({'update':'success'})
+    
+class singleObjAPIView(RetrieveUpdateAPIView):
+    queryset = Person.objects.all()
+    serializer_class = PersonModelSerializer
