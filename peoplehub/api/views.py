@@ -16,6 +16,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET','PUT','PATCH'])
 def singleobj(request, id):
@@ -55,9 +56,12 @@ def multipleobj(request):
         return Response(serializer.data)
     
 class multipleObjAPIView(ListCreateAPIView):
-    authentication_classes = [TokenAuthentication]
+    
     queryset = Person.objects.all()
     serializer_class = PersonModelSerializer
+    
+    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
 
     def get(self, request, *args, **kwargs):
         print(request.user)

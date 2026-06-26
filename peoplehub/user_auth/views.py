@@ -5,7 +5,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 
+
 class LoginAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
